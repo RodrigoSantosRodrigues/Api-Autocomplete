@@ -1,0 +1,630 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Auto Complete API",
+    "description": "Api rest para autocomplete. Navegue para [Home page](http://localhost:5000/) para mais informações sobre o serviço.",
+    "version": "1.0.0",
+    "termsOfService": "http://localhost:5000",
+    "contact": {
+      "email": "rodrjuniorsantos@gmail.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000",
+      "description": "Servidor primário, e.g. Main (production) server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "APIKeyHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "api-token"
+      }
+    }
+  },
+  "paths": {
+    "/api/users/": {
+      "post": {
+        "summary": "Criar usuário. Retorna um jwt-token para autenticação no serviço",
+        "tags": [
+          "User"
+        ],
+        "requestBody": {
+          "description": "Usuários",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "email",
+                  "password",
+                  "role"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "role": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Usuário registrado com sucesso"
+          },
+          "400": {
+            "description": "Usuário já existe, por favor, informe um email diferente"
+          }
+        }
+      },
+      "get": {
+        "summary": "Buscar todos os usuários",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "tags": [
+          "User"
+        ],
+        "responses": {
+          "200": {
+            "description": "Retorna todos os usuários com sucesso"
+          },
+          "400": {
+            "description": "Usuário não existe"
+          },
+          "401": {
+            "description": "Permissão de acesso negado"
+          }
+        }
+      }
+    },
+    "/api/users/{user_id}": {
+      "get": {
+        "summary": "Buscar um usuário pelo ID",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "tags": [
+          "User"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "user_id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "ID de usuário"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dados de usuário retornados com sucesso"
+          },
+          "400": {
+            "description": "Usuário não existe"
+          },
+          "401": {
+            "description": "Permissão de acesso negado"
+          }
+        }
+      }
+    },
+    "/api/users/me": {
+      "get": {
+        "summary": "Retorna seus dados",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "tags": [
+          "User"
+        ],
+        "responses": {
+          "200": {
+            "description": "Dados buscados com sucesso"
+          },
+          "400": {
+            "description": "Erro ao consultar dados"
+          }
+        }
+      },
+      "put": {
+        "summary": "Atuaizar dados de usuário existente",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "tags": [
+          "User"
+        ],
+        "requestBody": {
+          "description": "Funções de usuários",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "email",
+                  "password",
+                  "role"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "role": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Usuário atualizado com sucesso"
+          },
+          "400": {
+            "description": "Dados faltantes"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletar usuário logado",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "tags": [
+          "User"
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuário deletado com sucesso"
+          }
+        }
+      }
+    },
+    "/api/users/login": {
+      "post": {
+        "summary": "Realizar login na api, retorna um token de autenticação",
+        "tags": [
+          "User"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login realizado com sucesso, token retornado com sucesso"
+          },
+          "400": {
+            "description": "Dados ausentes"
+          },
+          "401": {
+            "description": "Informe um email válido e uma senha válida"
+          },
+          "402": {
+            "description": "Credenciais inválidas"
+          },
+          "403": {
+            "description": "Credenciais inválidas"
+          }
+        }
+      }
+    },
+    "/api/entities/": {
+      "post": {
+        "summary": "Criar uma entidade.",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "tags": [
+          "Entity"
+        ],
+        "requestBody": {
+          "description": "Funções de entidade",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "documento"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "documento": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Entidade criado com sucesso"
+          },
+          "400": {
+            "description": "Dados ausentes"
+          },
+          "401": {
+            "description": "Documento informado já exite"
+          },
+          "402": {
+            "description": "Já existe uma conta para esse usuário"
+          }
+        }
+      },
+      "get": {
+        "summary": "Buscar todas as entidades. Você deve ser um administrador para acessar esse recurso",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "tags": [
+          "Entity"
+        ],
+        "responses": {
+          "200": {
+            "description": "Retorna todas as entidades com sucesso"
+          },
+          "400": {
+            "description": "Não existe entidades"
+          },
+          "401": {
+            "description": "Permissão de acesso negado"
+          }
+        }
+      }
+    },
+    "/api/entities/{entity_id}": {
+      "get": {
+        "summary": "Buscar uma entidade pelo ID",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "tags": [
+          "Entity"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entity_id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "ID de uma entidade"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dados retornados com sucesso"
+          },
+          "400": {
+            "description": "Entidade não existe"
+          },
+          "401": {
+            "description": "Permissão de acesso negado"
+          }
+        }
+      },
+      "put": {
+        "summary": "Atualizar uma entidade",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "tags": [
+          "Entity"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entity_id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "ID de uma entidade"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Funções de uma entidade",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "documento"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "documento": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Entidade atualizado com sucesso"
+          },
+          "400": {
+            "description": "Entidade não existe"
+          },
+          "401": {
+            "description": "Permissão de acesso negado"
+          },
+          "402": {
+            "description": "Dados ausentes"
+          },
+          "403": {
+            "description": "Documento já existe, por favor, informe um documento válido"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletar uma entidade",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "tags": [
+          "Entity"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entity_id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "ID de uma entidade"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entidade deletado com sucesso"
+          },
+          "400": {
+            "description": "Entidade não existe"
+          },
+          "401": {
+            "description": "Permissão de acesso negado"
+          }
+        }
+      }
+    },
+    "/api/collectors/": {
+      "post": {
+        "summary": "Criar um evento.",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "tags": [
+          "Collector"
+        ],
+        "requestBody": {
+          "description": "Funções de eventos",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "event",
+                  "timestamp"
+                ],
+                "properties": {
+                  "event": {
+                    "type": "string"
+                  },
+                  "timestamp": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Evento criado com sucesso"
+          },
+          "400": {
+            "description": "Dados ausentes"
+          }
+        }
+      },
+      "get": {
+        "summary": "Buscar todas os eventos. Você deve ser um administrador para acessar esse recurso",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "tags": [
+          "Collector"
+        ],
+        "responses": {
+          "200": {
+            "description": "Retorna todas os eventos com sucesso"
+          },
+          "400": {
+            "description": "Não existe eventos"
+          },
+          "401": {
+            "description": "Permissão de acesso negado"
+          }
+        }
+      }
+    },
+    "/api/collectors/{event_id}": {
+      "get": {
+        "summary": "Buscar um evento pelo ID",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "tags": [
+          "Collector"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "ID de um evento"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dados retornados com sucesso"
+          },
+          "400": {
+            "description": "Evento não existe"
+          },
+          "401": {
+            "description": "Permissão de acesso negado"
+          }
+        }
+      }
+    },
+    "/api/autocompleties/": {
+      "post": {
+        "summary": "Auto completar",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "tags": [
+          "AutoComplete"
+        ],
+        "requestBody": {
+          "description": "Funções de auto complete",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "letters"
+                ],
+                "properties": {
+                  "letters": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sucesso"
+          },
+          "400": {
+            "description": "Erro ao auto completar"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "User",
+      "description": "End Points do usuário"
+    },
+    {
+      "name": "Entity",
+      "description": "End Points de entidade"
+    },
+    {
+      "name": "Collector",
+      "description": "End Points de coletor de eventos"
+    },
+    {
+      "name": "AutoComplete",
+      "description": "End Points de auto complete"
+    }
+  ]
+}
+
